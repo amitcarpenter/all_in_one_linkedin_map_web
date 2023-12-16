@@ -1,0 +1,265 @@
+<%- include('header') %>
+  <!-- partial -->
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="profile-hed">
+              <img src="images/author.jpg">
+              <h4>
+                <%= profileData.fullName %>
+              </h4>
+
+              <hr>
+              <h5>About</h5>
+              <p>
+                <%= profileData.about %>
+              </p>
+              <!-- </div> -->
+            </div>
+          </div>
+          <div class="col-md-7">
+
+            <div class="profile-details">
+              <ul class="nav nav-tabs prof-ul" id="myTabs">
+                <!-- tab 1 hed -->
+                <li class="nav-item">
+                  <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" href="#">Profile
+                    Details</a>
+                </li>
+                <!-- tab 2 hed -->
+                <li class="nav-item">
+                  <a class="nav-link" id="edit-profile-tab" data-bs-toggle="tab" href="#edit-profile">Edit
+                    Profile</a>
+                </li>
+
+              </ul>
+              <div class="tab-content">
+                <!-- tab 1 content -->
+
+                <div class="tab-pane fade show active" id="profile">
+                  <div class="row">
+                    <div class="col-3">
+                      <h6>Name</h6>
+                    </div>
+                    <div class="col-9">
+                      <p>
+                        <%= profileData.fullName %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <h6>Address</h6>
+                    </div>
+                    <div class="col-9">
+                      <p>
+                        <%= profileData.address %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <h6>Phone</h6>
+                    </div>
+                    <div class="col-9">
+                      <p>
+                        <%= profileData.mobileNumber %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <h6>Country</h6>
+                    </div>
+                    <div class="col-9">
+                      <p>
+                        <%= profileData.country %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <h6>Email</h6>
+                    </div>
+                    <div class="col-9">
+                      <p>
+                        <%= profileData.email %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- tab 2 content -->
+                <form id="editProfileForm">
+                  <div class="tab-pane fade" id="edit-profile">
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Profile Image</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <input name="imagefile" type="file" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>About</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <textarea class="form-control" rows="6" id="about"
+                            name="about"><%= profileData.about %></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Name</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <input name="fullName" type="text" class="form-control" id="fullName"
+                            value="<%= profileData.fullName %>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Address</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <input name="address" type="text" class="form-control" id="address"
+                            value="<%= profileData.address %>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Phone</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <input name="phone" type="number" class="form-control" id="phone"
+                            value="<%= profileData.mobileNumber %>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Country</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+
+                          <select name="country" class="form-control" id="country" value="<%= profileData.country %>">
+                            <option>Chosse Country</option>
+                            <option>India</option>
+                            <option>USA</option>
+                          </select>
+                          
+                          <!-- <input name="country" type="text" class="form-control" id="country"
+                            value="<%= profileData.country %>"> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <h6>Email</h6>
+                      </div>
+                      <div class="col-9">
+                        <div class="form-group">
+                          <input name="email" type="email" class="form-control" id="email"
+                            value="<%= profileData.email %>" disabled>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="save-btn" onclick="saveProfile()">Update</button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function saveProfile() {
+
+        const formData = new FormData(document.getElementById('editProfileForm'));
+        const fullName = formData.get('fullName');
+        const mobileNumber = formData.get('phone');
+        const about = formData.get('about');
+        const address = formData.get('address');
+        const country = formData.get('country');
+
+        // Make the API request
+        try {
+          const response = await fetch('http://localhost:5001/edit_profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fullName,
+              mobileNumber,
+              about,
+              address,
+              country,
+            }),
+          });
+
+          const data = await response.json();
+          console.log(data, " here ")
+
+          if (response.ok) {
+            alert('Profile updated successfully');
+            // Optionally, you can redirect to another page or update the UI
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        } catch (error) {
+          console.error('Error:', error.message);
+          alert('An error occurred. Please try again.');
+        }
+      }
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const profileTab = document.getElementById('profile-tab');
+        const editProfileTab = document.getElementById('edit-profile-tab');
+        const profileContent = document.getElementById('profile');
+        const editProfileContent = document.getElementById('edit-profile');
+    
+        // Check which tab is active initially and adjust display
+        if (profileTab.classList.contains('active', 'show')) {
+          editProfileContent.style.display = 'none';
+        } else if (editProfileTab.classList.contains('active', 'show')) {
+          profileContent.style.display = 'none';
+        }
+    
+        // Add click event listeners to tabs
+        profileTab.addEventListener('click', function () {
+          profileContent.style.display = 'block';
+          editProfileContent.style.display = 'none';
+        });
+    
+        editProfileTab.addEventListener('click', function () {
+          profileContent.style.display = 'none';
+          editProfileContent.style.display = 'block';
+        });
+      });
+    
+      // async function saveProfile() {
+      //   Your saveProfile function remains unchanged
+      // }
+    </script>
+    
+    
+    <%- include('footer') %>

@@ -1,0 +1,747 @@
+/* breadcrumbs */
+.pagetitle .breadcrumb{
+    border: none;
+    margin-left: -15px;
+}
+.pagetitle .breadcrumb .active{
+    color: #012970;
+}
+.pagetitle .breadcrumb li a{
+    color: gray;
+    text-decoration: none;
+}
+.pagetitle .breadcrumb li a:hover{
+    text-decoration: none;
+    text-decoration: underline;
+}
+.pagetitle nav{
+    margin-left: 25px;
+}
+/* dashboard start */
+/* .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    padding-left: 0px;
+    padding-right: 0px;
+} */
+/* .main_body_cont{
+    padding-left: 0px;
+    padding-right: 0px;
+} */
+
+.create-new-col{
+    display: flex;
+    justify-content: flex-end;
+}
+.create-new-admin{
+    height: 0px;
+}
+.create-new-admin a{
+    border: 1px solid #6261b7;
+    padding: 10px 30px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6261b7;
+    text-decoration: none;
+}
+
+.create-new-admin:hover a{
+    border: 1px solid #6261b7;
+    background-color: #28245a;
+    text-decoration: none;
+    color: white;
+}
+.sign_in_btn button{
+    background-color:#012970;
+}
+.sign_in_btn button:hover{
+    background-color:white;
+    color: #012970;
+    font-weight: bold;
+}
+
+.small-box-blue {
+    box-shadow: 5px 5px 5px #4b49ac;
+    background-color: #4b49ac;
+    padding: 35px 0px 35px 0px;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 22px;
+    border-radius: 10px;
+}
+
+.small-box-red {
+    box-shadow: 5px 5px 5px #389ca2;
+    background-color: #389ca2;
+    padding: 35px 0px 35px 0px;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 22px;
+    border-radius: 10px;
+}
+
+.youtube-icon a {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.youtube-icon:hover a{
+    color: rgb(208, 201, 201);
+    text-decoration: none;
+}
+.youtube-icon:hover i{
+    color: rgba(255, 0, 0, 0.418);
+}
+
+.youtube-icon i {
+    margin-left: -20px;
+    margin-right: 5px;
+    font-size: 27px;
+}
+/* dashboard modal  */
+.add_channel_modal_hed{
+    background-color: #28245a;
+    color: white;
+}
+.add_channel_modal_hed h5{
+    font-size: 23px;
+}
+.add_channel_modal_hed button{
+    background-color: #28245a;
+    border: none;
+}
+.add_channel_modal_hed button i{
+    font-size: 27px;
+}
+.add_channel_modal_body{
+    background-color: #dae6f0b5;
+}
+.add_channel_modal_footer{
+    background-color: #dae6f0b5;
+}
+.add_channel_modal_body label{
+    color: #28245a;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    /* text-decoration: underline; */
+}
+.add_channel_modal_body input{
+    font-size: 13px;
+}
+.add_channel_modal_footer button{
+    background-color: #28245a;
+    color: white;
+    padding: 8px;
+    border-radius: 7px;
+    /* font-weight: bold; */
+    border: 1px solid #28245a;
+}
+.add_channel_modal_footer button:hover{
+    background-color: white;
+    color: #28245a;
+    font-weight: 500;
+}
+
+
+/* .dashboard end */
+
+/* register page start */
+.register-main{
+    background-color: #f5f7ff;
+    padding: 50px;
+    width: 500px;
+    margin: auto;
+    box-shadow: 10px 10px 10px 10px rgba(177, 168, 168, 0.623);
+}
+.register-hed h3{
+    text-align: center;
+    margin-bottom: 50px;
+    color: darkblue;
+    font-weight: 500;
+    font-family: sans-serif;
+}
+.register-row{
+    justify-content: center;
+}
+
+.brand-logo img{
+    height: 37px;
+    margin-bottom: 20px;
+}
+.register-main h4{
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.register-main h6{
+    margin-bottom: 15px;
+    /* font-size: 14px; */
+}
+/* register page end */
+
+/* profile page start */
+.prof-ul{
+    display: flex;
+justify-content: space-between;
+}
+.nav-tabs .nav-item .nav-link.active{
+    background-color: #012970;
+    color: white;
+}
+/* .profile-edit{
+    text-align: end;
+    margin-bottom: 20px;
+    margin-top: -10px;
+}
+.profile-edit a{
+    color: aliceblue;
+    font-weight: 400;
+    font-size: 13px;
+    background: #28245a;
+    padding: 8px;
+    border-radius: 8px
+}
+.profile-edit a:hover{
+    text-decoration: none;
+    color: #28245a;
+    background-color: white;
+    border: 1px solid #28245a;
+    font-weight: 700;
+} */
+.profile-hed{
+    background-color: white;
+    padding: 40px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+.profile-hed img {
+    border-radius: 70px;
+    height: 135px;
+}
+.profile-hed h4{
+    font-weight: bold;
+    margin-top: 20px;
+}
+.profile-hed span{
+    color: gray;
+    font-weight: 500;
+}
+.profile-details{
+    background-color: white;
+    padding: 40px; 
+    color: #012970;  
+    margin-top: 10px;
+}
+.profile-details h6{
+    color: rgba(1, 41, 112, 0.6);
+    margin-top: 20px;
+}
+.profile-details p{
+    margin-top: 20px;
+    color: black;
+    font-weight: 500;
+}
+.profile-details input{
+    color: black;
+}
+.save-btn{
+    background: #28245a;
+    color: white;
+    padding: 3px 15px;
+    border-radius: 10px;
+    border: 1px solid #28245a;
+}
+.save-btn:hover{
+    background-color: white;
+    color: #28245a;
+    font-weight: bold;
+    border: 1px solid #28245a;
+}
+/* profile page end */
+
+
+/* subadmin table start */
+.view-btn button{
+    border-radius: 17px;
+}
+.view-btn a{
+    color: gray;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0px 10px;
+}
+.view-btn button:hover a{
+    color: white;
+    text-decoration: none;
+}
+.status_btn button{
+    font-size: 14px;
+    padding: 6px 20px;
+    font-weight: 500;
+    height: 35px;
+}
+.status_btn button:hover{
+    background-color: white;
+    color: green;
+}
+
+/* subAdmin page start */
+.subAdmin-detail-1{
+    color: black;
+}
+.subAdmin-values-row button{
+    background: #ff000094;
+    color: white;
+    padding: 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.subAdmin-values-row button i{
+    color: white;
+    margin-left: 5px;
+}
+
+.subAdmin-values-row p{
+    color: #aa4a37;
+    margin-top: 4px;
+    margin-bottom: 50px;
+    font-weight: bold;
+}
+.subAdmin-values-row span{
+    margin-right: 15px;
+    color: brown;
+}
+.subAdmin-values-row i{
+    color: #28245a;
+    font-size: 22px;
+}
+/* subAdmin page end */
+/* subadmin table end */
+
+/* .subAdmin dashboard start */
+.channel_details_row{
+    /* display: flex; */
+    /* justify-content: space-between; */
+    margin-bottom: 40px;
+    padding: 30px 10px;
+    border-radius: 6px;
+    /* background-color: #012a70a4; */
+    box-shadow: 1px 2px 6px 3px #71929f52;
+}
+.channel_details_row h5{
+    /* margin: 16px 0px; */
+    color: #28245a;
+    font-size: 20px;
+    font-weight: 700;
+}
+.channel_hed{
+    display: flex;
+    justify-content: space-between;
+}
+
+.channel_list_stop_btn button{
+    background-color: #28245a;
+    color: white;
+    padding: 5px 30px;
+    border-radius: 7px;
+}
+.channel_list_stop_btn button:hover{
+    background-color: white;
+    color: #28245a;
+    font-weight: 700;
+}
+.icons_eye {
+    color: #44D5F4;
+    padding: 10px;
+    font-size: 20px;
+  }
+  
+  .icons_user {
+    color: #4EE38A;
+    padding: 0px 14px;
+    font-size: 20px;
+  }
+  
+  .icons_thumb {
+    color: #FE346B;
+    padding: 0px 14px;
+    font-size: 20px;
+  }
+  
+  .icons_thumb_down {
+    color: #250349;
+    padding: 0px 14px;
+    font-size: 20px;
+  }
+  
+  .icons_cmment {
+    color: #FCCC6C;
+    padding: 0px 14px;
+    font-size: 20px;
+  }
+  
+/* .subAdmin dashboard end */
+
+/* form start */
+.form-row-main{
+    padding: 0px 20px;
+    display: flex;
+    /* justify-content: center; */
+}
+.form-hed {
+    background: cadetblue;
+    color: white;
+    margin-bottom: 40px;
+    height: 60px;
+    padding-top: 10px;
+}
+
+.form-hed h5 {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.form-row-main label {
+    font-size: 14px;
+    margin-top: 10px;
+}
+.form-row-main select{
+    margin-bottom: 15px;
+}
+
+.form-row-main input {
+    margin-bottom: 20px;
+}
+
+.loader-icon img {
+    height: 65px;
+    margin-top: -15px;
+}
+
+.form-side-button button {
+    padding: 10px;
+    color: white;
+    font-size: 12px;
+    border-radius: 10px;
+}
+.form-side-button button:hover {
+    color: #28245a;
+    font-weight: bold;
+}
+
+.form-submit-btn button {
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    border: 1px solid #28245a;
+    background-color: #28245a;
+}
+
+.form-submit-btn button:hover {
+    background-color: white;
+    color: #28245a;
+    border: 1px solid #28245a;
+    font-weight: bold;
+}
+
+/* edit order sec */
+.form-update-btn{
+    /* text-align: center; */
+    margin-top: 20px;
+}
+.form-update-btn {
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid #28245a;
+    background-color: #28245a;
+}
+
+.form-update-btn:hover {
+    background-color: white;
+    color: #28245a;
+    border: 1px solid #28245a;
+    font-weight: bold;
+}
+.mod-update h4{
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    color: #14122d;
+}
+
+/* form end */
+
+/* table sec start */
+.dataTables_wrapper ,
+ .dataTables_length select {
+    height: 30px;
+    margin-bottom: 15px;
+}
+
+.main-table-content thead {
+    margin-top: 100px;
+}
+
+.progress-td button {
+    width: 85px;
+    font-size: 11px;
+    padding: 8px;
+}
+.historyTable_view_btnn button{
+    padding: 5px 13px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.historyTable_view_btnn button:hover{
+    color: white;
+}
+
+/* table sec end */
+
+/* history table start */
+div.dt-buttons>.dt-button{
+    height: 30px;
+    padding-top: 3px;
+    background-color: #00ffff17;
+}
+.dt-buttons{
+    margin-bottom: 25px;
+}
+/* history table end */
+
+/* checkOrder sec start */
+.service-row{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+.service-row h4 {
+    margin-top: 15px;
+    font-weight: bold;
+    font-family: cursive;
+    color: #012970;
+    margin-left: -30px;
+}
+.check-order-sec h6{
+    margin-top: 10px;
+    margin-bottom: 60px;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    font-family: cursive;
+    color: #28245a;
+    text-decoration: underline;
+}
+.loader-icon-red img{
+    height: 50px;
+}
+
+.stop-btn button,
+.edit-btn button{
+    padding: 10px 20px;
+    font-weight: 600;
+}
+.edit-btn a button:hover{
+    background-color: white;
+    color: green;
+}
+.stop-btn a button:hover{
+    background-color: white;
+    color: red;
+}
+
+.check-order-sec button{
+    /* width: 70px; */
+    margin-top: 8px;
+}
+.services{
+    background-color: #24395a70;
+    color: white;
+    font-weight: bold;   
+}
+.services h5{
+    /* color: white; */
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+/* checkOrder sec end */
+
+/* services sec start */
+.service-faq-hed{
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+.service-faq-hed span{
+    color: #389ca2;
+}
+.services-hed{
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;   
+}
+.service-text-main{
+    margin-bottom: 50px;
+}
+.service-collapse-hed{
+    display: flex;
+    justify-content: space-between;
+}
+.service-collapse-hed h5{
+    color: blue;
+    padding: 15px;
+}-faq
+.service-collapse-hed i{
+    color: blue;
+    padding: 15px;
+}
+.service-collapse-hed:hover{
+    background-color: #012a70a4;
+}
+.service-collapse-hed:hover h5,i{
+    color: white;
+}
+.service-collapse-hed:hover i{
+    color: white;
+}
+
+
+
+.btn-col:not(.collapsed)::after{
+    background-image: url(/Frontend/template/images/author.jpg);
+}
+.btn-col::after{
+    background-image: url(/Frontend/template/images/loader-icon-red.svg);
+}
+/* services sec end */
+
+/* email Table start */
+.email_table_btns_row{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.add_email button{
+    background-color: #28245a;
+    color: white;
+    border: 1px solid #28245a;
+    font-size: 14px;
+}
+.add_email button:hover{
+    background-color: white;
+    color: #28245a;
+    font-weight: 400;
+    border: 1px solid #28245a;
+}
+.email_table_btns_form label{
+    color: #28245a;
+    font-weight: 500;
+    font-size: 17px;
+}
+.email_table_btns_form input{
+    font-size: 13px;
+}
+.email_table_btns_form button{
+    background-color: #28245a;
+    color: white;
+    border: 1px solid #28245a;
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 6px;
+}
+.email_table_btns_form button:hover{
+    background-color: white;
+    color: #28245a;
+    border: 1px solid #28245a;
+    font-size: 14px;
+    font-weight: 500;
+}
+.action_th{
+    text-align: center;
+}
+.action_btns{
+    display: flex;
+    justify-content: center;
+}
+.action_btns button{
+    padding: 3px 20px;
+    font-size: 14px;
+    margin-right: 10px;
+}
+/* add email modal */
+.add_email_modal_hed{
+    background-color: #28245a;
+    color: white;
+}
+.add_email_modal_hed button{
+    background-color: #28245a;
+    border: none;
+}
+.add_email_modal_hed button i{
+    font-size: 25px;
+}
+.add_email_modal_body{
+    background-color: #dae6f0b5;
+}
+.add_email_modal_footer{
+    background-color: #dae6f0b5;
+}
+.modal_btn_email_save button{
+    background-color: #28245a;
+    border: 1px solid #28245a;
+    color: white;
+}
+.modal_btn_email_save button:hover{
+    background-color: white;
+    border: 1px solid #28245a;
+    color: #28245a;
+    font-weight: 600;
+}
+
+/* edit data modal */
+
+.edit_email_modal_hed{
+    background-color: #28245a;
+    color: white;
+}
+.edit_email_modal_hed button{
+    background-color: #28245a;
+    border: none;
+}
+.edit_email_modal_hed button i{
+    font-size: 25px;
+}
+.edit_email_modal_body{
+    background-color: #dae6f0b5;
+}
+.edit_email_modal_footer{
+    background-color: #dae6f0b5;
+}
+.modal_btn_data_update button{
+    background-color: #28245a;
+    border: 1px solid #28245a;
+    color: white;
+}
+.modal_btn_data_update button:hover{
+    background-color: white;
+    border: 1px solid #28245a;
+    color: #28245a;
+    font-weight: 600;
+}
+/* email Table end */
+
+

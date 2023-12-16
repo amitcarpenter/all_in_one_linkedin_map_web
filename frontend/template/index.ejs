@@ -1,0 +1,208 @@
+<%- include('header') %>
+<style>
+  .remove_under_line {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+  }
+</style>
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper">
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- modal head -->
+          <div class="modal-header add_channel_modal_hed">
+            <h5 class="modal-title" id="exampleModalLabel">Add Channel Link</h5>
+            <button
+              type="button"
+              class=""
+              data-bs-dismiss="modal"
+              aria-label=""
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <!-- modal body -->
+          <div class="modal-body add_channel_modal_body">
+            <form>
+              <div class="container">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <!-- <input type="text" id="myInput" placeholder="Enter something">
+                        <a href="#" >Validate Input</a> -->
+
+                      <label for="addChannelLink" class="form-label"
+                        >Channel Link</label
+                      >
+                      <input
+                        id="channelLinkInput"
+                        type="text"
+                        class="form-control"
+                        id="addChannelLink"
+                        placeholder="Add Channel Link"
+                        oninput="clearErrorMsg('errormsg')"
+                      />
+                      <span
+                        id="errormsg"
+                        style="color: red; margin-left: 10px"
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- modal footer -->
+          <div class="add_channel_modal_footer">
+            <div class="modal-footer">
+              <a href="/set_target_video" id="validateAnchor">
+                <button type="submit" class="">Add Channel</button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="pagetitle">
+            <h3>Dashboard</h3>
+            <nav>
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 create-new-col">
+          <div class="create-new-admin">
+            <a href="Add-User"> Create New </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small boxes (Stat box) -->
+      <div class="row mt-5">
+        <!-- small box 1 -->
+
+        <div class="col-lg-4 col-6 dashboard-box-col">
+          <a class="remove_under_line" href="/website_table_data">
+            <div class="small-box-blue youtube-icon">
+              <i class="fa-brands fa-chrome"></i>
+              Website Data
+            </div>
+          </a>
+        </div>
+
+        <!-- small box 2 -->
+        <div class="col-lg-4 col-6 dashboard-box-col">
+          <div class="small-box-red youtube-icon">
+            <a href="/linkedin_table_data">
+              <i class="fa-brands fa-linkedin"></i>
+              Linkedin Data
+            </a>
+          </div>
+        </div>
+        <!-- small box 3 -->
+        <div class="col-lg-4 col-6 dashboard-box-col">
+          <div class="small-box-blue youtube-icon">
+            <a href="/map_table_data">
+              <i class="fas fa-map-marker-alt"></i>
+              Map Data
+            </a>
+          </div>
+        </div>
+
+        <!-- <div class="col-lg-4 col-6 dashboard-box-col">
+          <div
+            class="small-box-red youtube-icon"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            <a href="#">
+              <i class="fa-brands fa-youtube"></i>
+              YouTube Comments
+            </a>
+          </div>
+        </div>
+      
+        <div class="col-lg-4 col-6 dashboard-box-col">
+          <div
+            class="small-box-blue youtube-icon"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            <a href="#">
+              <i class="fa-brands fa-youtube"></i>
+              YouTube Watch Hours
+            </a>
+          </div>
+        </div>
+   
+        <div class="col-lg-4 col-6 dashboard-box-col">
+          <div
+            class="small-box-red youtube-icon"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            <a href="#">
+              <i class="fa-brands fa-youtube"></i>
+              YouTube Live Views
+            </a>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Function to perform validation
+    function validateInput() {
+      var inputValue = document.getElementById("channelLinkInput").value;
+
+      // Your validation logic goes here
+      if (inputValue === "") {
+        document.getElementById("errormsg").innerHTML = "channel link required";
+        return false;
+      }
+
+      // If validation passed, show alert msg channel add successfully
+      // alert('Channel Link add Successfully  ' + inputValue);
+      return true;
+    }
+
+    // Attach click event listener to the anchor tag
+    document
+      .getElementById("validateAnchor")
+      .addEventListener("click", function (event) {
+        // Prevent the default behavior of the anchor tag (e.g., navigating to a link)
+        event.preventDefault();
+        // Call the validation function
+        if (validateInput()) {
+          // If validation passed, redirect to set target video page
+          window.location.href = "/set_target_video";
+        }
+      });
+
+    // when type on input clear error function
+    function clearErrorMsg(errorId) {
+      document.getElementById(errorId).innerHTML = "";
+    }
+  </script>
+
+  <%- include('footer') %>
+</div>

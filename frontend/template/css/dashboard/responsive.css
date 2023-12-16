@@ -1,0 +1,57 @@
+/* media querry for screens that are 992px or less */
+@media screen and (max-width: 992px) {
+    .form-row-main {
+        display: flex;
+        justify-content: center;
+    }
+
+}
+
+/* media querry for screens that are 768px or less */
+@media screen and (max-width: 768px) {
+    .loader-icon img {
+        margin-left: -10px;
+    }
+
+}
+
+/* media querry for screens that are 576px or less */
+@media screen and (max-width: 576px) {
+    .loader-icon {
+        margin-left: -20px;
+        margin-right: 30px;
+    }
+
+    .form-row-main .lab {
+        margin-right: 17px;
+        margin-top: 5px;
+        margin-left: -10px;
+    }
+
+    .form-row-main label {
+        margin-left: -20px;
+    }
+
+    .form-submit-btn button {
+        margin-left: -20px;
+    }
+
+    .register-main {
+        width: 290px;
+    }
+
+    .create-new-col {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .youtube-icon a {
+        font-size: 12px;
+    }
+    .youtube-icon i {
+        margin-left: 0px;
+        /* margin-right: 5px; */
+        font-size: 14px;
+    }
+}

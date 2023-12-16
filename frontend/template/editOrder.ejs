@@ -1,0 +1,98 @@
+<%- include('header') %>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="container-fluid">
+        <div class="pagetitle">
+          <h3>Form</h3>
+          <nav>
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+              <li class="breadcrumb-item active">Form</li>
+            </ol>
+          </nav>
+        </div>
+        <!-- form start -->
+        <!-- <div class="container"> -->
+        <div class="row">
+          <div class="col-12 form-hed">
+            <h5>Edit Order</h5>
+          </div>
+        </div>
+        <!-- form row 1 -->
+        <div class="row form-row-main">
+          <div class="col-3 lab">
+            <label for="email" class="form-label">Search Links</label>
+          </div>
+          <div class="col-6">
+            <div>
+              <select class="form-control w-70">
+                <option>50 subscribers $14.00</option>
+                <option>100 subscribers $23.00</option>
+                <option>200 subscribers $27.00</option>
+                <option selected>300 subscribers $39.00</option>
+                <option>500 subscribers $65.00</option>
+                <option>750 subscribers $99.00</option>
+                <option>1000 subscribers $129.00</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- form row 2 -->
+        <div class="row form-row-main">
+          <div class="col-3 lab">
+            <label for="email" class="form-label">Page Limit</label>
+          </div>
+          <div class="col-6">
+            <input type="text" class="form-control" placeholder="" value="Service name 1" name="text">
+          </div>
+
+        </div>
+
+        <!-- form row 3 -->
+        <div class="row form-row-main">
+          <div class="col-3 lab">
+            <label for="email" class="form-label">All Links</label>
+          </div>
+          <div class="col-6">
+            <input type="text" class="form-control" placeholder="" value="Service name 2" name="text">
+          </div>
+
+        </div>
+
+        <!-- form row 4 -->
+        <div class="row form-row-main">
+          <div class="col-3 lab">
+            <label for="email" class="form-label">Label</label>
+          </div>
+          <div class="col-6">
+            <input type="text" class="form-control" placeholder="Enter text here" value="Service name 3" name="text">
+          </div>
+        </div>
+
+        <!-- submit button -->
+        <div class="row">
+          <div class="col-10 ">
+            <button type="submit" class="form-update-btn" data-bs-toggle="modal"
+              data-bs-target="#exampleModal">Update</button>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title fs-5" id="exampleModalLabel"></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body mod-update">
+                    <h4>Update Seccessfully</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('footer') %>

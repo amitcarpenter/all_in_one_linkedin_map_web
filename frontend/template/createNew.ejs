@@ -1,0 +1,172 @@
+<%- include("header") %>
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="container">
+        <div class="row register-row">
+          <div class="col-12">
+            <div class="register-main">
+              <div class="register-hed">
+                <h3>Create New User</h3>
+              </div>
+              <form id="registrationForm">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="text" name="fullName" class="form-control form-control-lg" id="fullName"
+                        placeholder="Username" oninput="clearErrorMessages('nameErrorshow')" />
+                      <span id="nameErrorshow" style="color: red; margin-left: 10px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="email" name="email" class="form-control form-control-lg" id="email"
+                        placeholder="Email" oninput="clearErrorMessages('emailErrorshow')" />
+                      <span id="emailErrorshow" style="color: red; margin-left: 10px;"></span>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="password" name="password" class="form-control form-control-lg" id="password"
+                        placeholder="Password" oninput="clearErrorMessages('psswrdErrorshow')" />
+                      <span id="psswrdErrorshow" style="color: red; margin-left: 10px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <input type="number" name="mobileNumber" class="form-control form-control-lg" id="MobileNumber"
+                        placeholder="Number" oninput="clearErrorMessages('numberErrorshow')" />
+                      <span id="numberErrorshow" style="color: red; margin-left: 10px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-12 sign_in_btn">
+                    <button type="button" onclick="validateFeilds(), AddUser() "
+                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">
+                      Create User
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // async function AddUser() {
+      //   try {
+      //     const fullName = document.getElementById("fullName").value;
+      //     const email = document.
+      ("email").value;
+      //     const password = document.getElementById("password").value;
+      //     const MobileNumber = document.getElementById("MobileNumber").value;
+
+      //     const response = await fetch("http://localhost:5001/Add-User", {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({
+      //         fullName,
+      //         email,
+      //         password,
+      //         MobileNumber,
+      //       }),
+      //     });
+
+      //     const data = await response.json();
+      //     console.log(data, "add user success fully");
+
+      //     if (data.success) {
+      //       window.location.href = "/dashboard";
+      //     } else {
+      //       console.log("login Field", data.error);
+      //     }
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
+
+      async function AddUser() {
+        try {
+          const fullName = document.getElementById("fullName").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const mobileNumber = document.getElementById("MobileNumber").value;
+
+          // Basic input validation
+          if (!fullName || !email || !password || !mobileNumber) {
+            console.log("All fields are required");
+            return;
+          }
+
+          const response = await fetch("http://localhost:5001/Add-User", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fullName,
+              email,
+              password,
+              mobileNumber: mobileNumber.toString(), // Convert to string
+            }),
+          });
+
+          const data = await response.json();
+          console.log(data, "add user successfully");
+
+          if (data.success) {
+            window.location.href = "/dashboard";
+          } else {
+            console.log("Registration failed:", data.error);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", function (event) {
+          // Prevent the default form submission
+          event.preventDefault();
+          // Call the AddUser function
+          AddUser();
+        });
+    </script>
+
+    </script>
+
+    <script>
+      // form validation
+      function validateFeilds() {
+        let name = document.getElementById("fullName").value;
+        let email = document.getElementById("email").value;
+        let passwrd = document.getElementById("password").value;
+        let number = document.getElementById("MobileNumber").value;
+
+        let errorName = document.getElementById("nameErrorshow");
+        let erroremail = document.getElementById("emailErrorshow");
+        let errorpsswrd = document.getElementById("psswrdErrorshow");
+        let errornumber = document.getElementById("numberErrorshow");
+
+        if (name == '') {
+          nameErrorshow.innerHTML = 'Name required';
+        }
+        if (email == '') {
+          emailErrorshow.innerHTML = 'Email required';
+        }
+        if (passwrd == '') {
+          psswrdErrorshow.innerHTML = 'Password required';
+        }
+        if (number == '') {
+          numberErrorshow.innerHTML = 'Number required';
+        }
+      }
+
+      function clearErrorMessages(errorId) {
+        document.getElementById(errorId).innerHTML = '';
+      }
+    </script>
+
+    <!-- content-wrapper ends -->
+    <%- include("footer") %>
+  </div>
