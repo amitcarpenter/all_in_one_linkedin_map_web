@@ -202,14 +202,14 @@ async function getNullEmailAndMobileProfiles() {
 // const email = "ramruhela413@gmail.com";
 // const password = "Ruhela@#$1";
 
-const email = "amitcarpenter199@gmail.com";
-const password = "@mit9302394128";
+// const email = "amitcarpenter199@gmail.com";
+// const password = "@mit9302394128";
 
 // const email = "arpityadav114697@gmail.com";
 // const password = "arpit114@aims";
 
-// const email = "amitamalva123@gmail.com";
-// const password = "@mit93023";
+const email = "amitamalva123@gmail.com";
+const password = "@mit93023";
 
 // const email = "amitcarpenter198@gmail.com";
 // const password = "@mit9302394";
@@ -241,7 +241,8 @@ let browser;
     app.post("/find_user_detail_from_comment", async (req, res) => {
       try {
         let linkedin_find_url = req.body.linkedin_comment_url;
-        let category = req.body.user_category;
+        let category_from_body = req.body.user_category;
+        console.log(category_from_body);
 
         // scroll page by inches
         const scrollPageByInches = async (inches) => {
@@ -266,28 +267,47 @@ let browser;
               "li.social-details-social-counts__comments"
             );
             const numberOfComments_count = comment_count_elements.length;
-
-            console.log(`comment Fount in page : ${numberOfComments_count}`);
+            console.log(
+              `Post comment Fount in page  : ${numberOfComments_count}`
+            );
 
             for (let i = 0; i < numberOfComments_count; i++) {
+              // if ((i = numberOfComments_count - 1)) {
+              //   await page.waitForTimeout(3000);
+              //   await page.$("button.scaffold-finite-scroll__load-button");
+              //   await page.click("button.scaffold-finite-scroll__load-button");
+              //   await page.waitForTimeout(3000);
+              // }
               await comment_count_elements[i].click();
               console.log(`click comment post number ${i}`);
               await page.waitForTimeout(3000);
-              await scrollPageByInches(3);
+              await scrollPageByInches(5);
+              console.log("scroll 5");
+              // await page.waitForTimeout(3000);
+              // await scrollPageByInches(2);
               await page.waitForTimeout(3000);
-              await page.waitForTimeout(3000);
-              await scrollPageByInches(2);
-              await page.waitForTimeout(3000);
+              console.log("waiting 3");
+
               const Load_more_Selector =
                 "button.comments-comments-list__load-more-comments-button";
               let Load_More_Button;
-              while (
-                (Load_More_Button = await page.$(Load_more_Selector)) !== null
-              ) {
-                await Load_More_Button.click();
-                await page.waitForTimeout(2000);
-                await scrollPageByInches(9);
-                await page.waitForTimeout(2000);
+              let load_more_button_if = await page.$(Load_more_Selector);
+              if (load_more_button_if) {
+                console.log("if load found 3");
+
+                while (
+                  (Load_More_Button = await page.$(Load_more_Selector)) !== null
+                ) {
+                  if (Load_More_Button) {
+                    await Load_More_Button.click();
+                    console.log("loadmore button click");
+                    await page.waitForTimeout(2000);
+                    await scrollPageByInches(3);
+                    console.log("scroll in load 3");
+                  }
+                  // await scrollPageByInches(9);
+                  await page.waitForTimeout(2000);
+                }
               }
 
               const commentElements = await page.$$(".comments-comment-item");
@@ -295,8 +315,18 @@ let browser;
               console.log(`Number of comments Post ${i}: ${numberOfComments}`);
               await page.waitForTimeout(3000);
 
-              async function saveToDatabase(commentInfo) {
+              async function saveToDatabase(commentInfo, category_from_body) {
                 try {
+                  console.log("Received commentInfo:", commentInfo);
+                  console.log(
+                    "Received category_from_body:",
+                    category_from_body
+                  );
+
+                  if (commentInfo) {
+                    commentInfo.category = category_from_body;
+                  }
+
                   const existingUser = await Users_Data.findOne({
                     profile_url: commentInfo.profile_url,
                   });
@@ -304,11 +334,9 @@ let browser;
                   if (!existingUser) {
                     const user = new Users_Data(commentInfo);
                     await user.save();
-                    //   console.log("Data saved to the database");
-                    // } else {
-                    //   console.log(
-                    //     "Duplicate data. Skipped saving to the database."
-                    //   );
+                    console.log("Saving data");
+                  } else {
+                    console.log("Duplicate data here");
                   }
                 } catch (error) {
                   console.error("Error saving data to the database:", error);
@@ -316,30 +344,45 @@ let browser;
               }
 
               const { sub, add, format } = require("date-fns");
-              async function extract_comment_data(category, reqBody) {
+              async function extract_comment_data(category_from_body) {
                 try {
                   let skipNext = false;
-
                   for (const commentElement of commentElements) {
                     if (skipNext) {
                       console.log("Skipping entire comment");
                       skipNext = false;
                       continue;
                     }
-
-                    // Check if the comment matches the specific selector to skip
                     const nestedComment = await commentElement.$(
                       "article.comments-comment-item > .comment-social-activity > .comments-comment-item__nested-items > div"
                     );
                     if (nestedComment) {
-                      console.log("Skipping nested comment");
-                      skipNext = true;
+                      console.log("if nested comment");
+                      const data = await page.$eval(
+                        "a.app-aware-link",
+                        (element) => {
+                          let name;
+                          const rawName = element.querySelector(
+                            ".comments-post-meta__name-text"
+                          );
+                          if (rawName) {
+                            const rawNameText = rawName.textContent.trim();
+                            name = rawNameText
+                              .replace(/View.*profile/i, "")
+                              .trim();
+                          }
+                          const link = element.getAttribute("href");
+                          return { name, link };
+                        }
+                      );
+                      await saveToDatabase(data, category_from_body);
+                      console.log("Skipping nested comment save data");
+                      // skipNext = true;
                       continue;
-                    }
-
-                    // Extract information from each comment element
-                    const commentInfo = await page.evaluate(
-                      (comment, reqBody) => {
+                    } else {
+                      // Extract information from each comment element
+                      console.log("continue process with the other code ");
+                      const commentInfo = await page.evaluate((comment) => {
                         try {
                           const rawName = comment.querySelector(
                             ".comments-post-meta__name-text"
@@ -364,7 +407,6 @@ let browser;
                             technologyElement &&
                             timestampElement
                           ) {
-                            // Your existing logic here
                             const rawNameText = rawName.innerText.trim();
                             const name = rawNameText
                               .replace(/View.*profile/i, "")
@@ -521,38 +563,32 @@ let browser;
                               technology: technology,
                               profile_url: profileUrl,
                               location: null,
-                              category: reqBody.category,
                             };
                           }
                         } catch (error) {
                           console.log(error);
                         }
-                      },
-                      commentElement,
-                      reqBody
-                    );
-                    await saveToDatabase(commentInfo);
+                      }, commentElement);
+                      console.log("save in the databse");
+                      await saveToDatabase(commentInfo, category_from_body);
+                    }
                   }
                 } catch (error) {
                   console.log(error);
                 }
               }
 
-              await extract_comment_data(category, req.body);
-
+              await extract_comment_data(category_from_body);
               await page.waitForTimeout(3000);
             }
           } catch (error) {
             console.log(error);
           }
         }
-
         await page.waitForTimeout(2000);
         await page.goto(linkedin_find_url);
-        await page.waitForTimeout(3000);
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(6000);
         await clickCommentCounts();
-        await page.waitForTimeout(3000);
       } catch (error) {
         console.log(error);
       }
@@ -568,11 +604,13 @@ let browser;
         let linkedin_find_user_from_people = req.body.linkedin_people_url;
         let category = req.body.user_category;
 
-        // Function for search result For the Withdraw Connection
         async function searchResultsFunctionForWithdraw() {
           try {
-            await page.waitForTimeout(3000);
+            // Increase the timeout if needed
+            await page.waitForTimeout(5000);
+
             const searchResults = await page.$$(".entity-result__title-text");
+            console.log(searchResults.length, "searchResults.length");
 
             for (let i = 0; i < searchResults.length; i++) {
               const result = searchResults[i];
@@ -582,32 +620,30 @@ let browser;
                 const linkText = await link.getProperty("href");
                 const href = await linkText.jsonValue();
 
-                // Check if the link matches the undesired pattern
                 if (
                   !href.includes(
                     "https://www.linkedin.com/search/results/people/headless"
                   )
                 ) {
-                  // Check if the link already exists in the database
                   const existingLink = await Users_Data.findOne({
                     profile_url: href,
                   });
 
                   if (!existingLink) {
-                    // If the link does not exist, save it to the database
                     const newLink = new Users_Data({
                       profile_url: href,
                       category: category,
                     });
+
                     await newLink.save();
                   } else {
+                    console.log("data already exist");
                   }
-                } else {
                 }
               }
             }
           } catch (error) {
-            console.log(error);
+            console.error("Error:", error);
           }
         }
 
@@ -626,7 +662,7 @@ let browser;
               await MoreFeedButton.click();
             }
           } catch (error) {
-            console.log(error);
+            console.log("e");
           }
         };
 
@@ -659,7 +695,7 @@ let browser;
               }
             }
           } catch (error) {
-            console.log(error);
+            console.log("e");
           }
         };
 
@@ -668,8 +704,14 @@ let browser;
         });
         await page.waitForTimeout(3000);
         await scrollAndPushLinksForConnetionWithdraw();
+        await page.waitForTimeout(4000);
+
+        const apiUrl = "http://localhost:5001/get_detail_from_profile_url";
+        const apiResponse = await axios.post(apiUrl, { data: "your data" });
+        console.log("API Response:", apiResponse.data);
+        return res.status(200).json({ message: "success" });
       } catch (error) {
-        console.log(error);
+        console.log("e");
       }
     });
   } catch (error) {
@@ -702,7 +744,6 @@ let browser;
             console.log(imageSrc, "imagescr");
           }
 
-          // Assuming you have already navigated to the page and have a reference to the page object
           try {
             name = await page.$eval(".text-heading-xlarge", (element) => {
               return element ? element.innerText.trim() : null;
@@ -715,7 +756,6 @@ let browser;
             console.error("Error:", error);
           }
 
-          // Assuming you have already navigated to the page and have a reference to the page object
           try {
             uiUxDesignerText = await page.$eval(
               ".text-body-medium.break-words",
@@ -777,20 +817,17 @@ let browser;
           if (contactInfoButton) {
             await contactInfoButton.click();
             console.log("Clicked on the contact info button");
-            // Now, you can extract and update more details related to contact info
           } else {
             console.log("Contact info button not found");
           }
 
           await page.waitForTimeout(3000);
-          // Find the section with the email information
           const htmlContent = await page.content();
 
-          // Use a regular expression to find the email
-          const emailRegex = /[\w]*[\w\.]*(?!\.)@gmail.com/g;
+          // const emailRegex = /[\w]*[\w\.]*(?!\.)@gmail.com/g;
+          const emailRegex = /[\w\.=-]+@[\w\.-]+\.[\w]{2,3}/gim;
           const matches = htmlContent.match(emailRegex);
 
-          // Extract the first match
           email = matches ? matches[0] : null;
 
           if (email) {
@@ -827,8 +864,8 @@ let browser;
             { new: true }
           );
         }
-        res.status(200).json({ array_of_profile_urls });
         await page.close();
+        return res.status(200).json({ array_of_profile_urls });
       } catch (error) {
         console.log(error);
         await page.close();
@@ -857,7 +894,6 @@ let browser;
             ".artdeco-button--secondary .artdeco-button__text",
             { timeout: 15000 }
           );
-          // Assuming you have already navigated to the page and have a reference to the page object
           const fourthButtonInnerText = await page.evaluate(() => {
             const buttonElements = document.querySelectorAll(
               ".artdeco-button--secondary .artdeco-button__text"
@@ -865,27 +901,23 @@ let browser;
 
             console.log("Number of matching elements:", buttonElements.length);
 
-            // Check if the NodeList has at least 4 elements
             if (buttonElements.length >= 4) {
-              const fourthButtonElement = buttonElements[3]; // Get the 4th element (0-indexed)
+              const fourthButtonElement = buttonElements[3];
 
               console.log(
                 "Inner text of the 4th element:",
                 fourthButtonElement.innerText.trim()
               );
 
-              // Check if the inner text of the 4th element is "Pending"
               if (fourthButtonElement.innerText.trim() === "Pending") {
-                // Update your database here or perform any other actions
                 console.log("Update the database!");
               }
 
               return fourthButtonElement.innerText.trim();
             } else {
-              return null; // Return null if there are not enough elements
+              return null;
             }
           });
-
           console.log("Inner text of the 4th button:", fourthButtonInnerText);
 
           await page.waitForSelector(".artdeco-button--primary", {
@@ -1251,134 +1283,124 @@ let browser;
         let email;
         let uiUxDesignerText;
         let name;
-        for (const link of array_of_profile_urls) {
-          await page.goto(link, { waitUntil: "domcontentloaded" });
-          await page.waitForTimeout(3000);
+        await page.goto(link, { waitUntil: "domcontentloaded" });
+        await page.waitForTimeout(3000);
+        const imgElement = await page.$(".pv-top-card-profile-picture__image");
+        if (imgElement) {
+          imageSrc = imgElement
+            ? await imgElement.evaluate((node) => node.src)
+            : null;
 
-          // Profile Image of user
-          const imgElement = await page.$(
-            ".pv-top-card-profile-picture__image"
-          );
-          if (imgElement) {
-            imageSrc = imgElement
-              ? await imgElement.evaluate((node) => node.src)
-              : null;
-
-            console.log(imageSrc, "imagescr");
-          }
-
-          // Assuming you have already navigated to the page and have a reference to the page object
-          try {
-            name = await page.$eval(".text-heading-xlarge", (element) => {
-              return element ? element.innerText.trim() : null;
-            });
-
-            if (name) {
-              console.log("Name:", name);
-            }
-          } catch (error) {
-            console.error("Error:", error);
-          }
-
-          // Assuming you have already navigated to the page and have a reference to the page object
-          try {
-            uiUxDesignerText = await page.$eval(
-              ".text-body-medium.break-words",
-              (element) => {
-                return element ? element.innerText.trim() : null;
-              }
-            );
-
-            if (uiUxDesignerText) {
-              console.log("UI/UX Designer Text:", uiUxDesignerText);
-            }
-          } catch (error) {
-            console.error("Error:", error);
-          }
-
-          // Find Location
-          const spanElement_location = await page.$(
-            "div.mt2 > .text-body-small"
-          );
-
-          // Check if the element exists
-          if (spanElement_location) {
-            location = await page.evaluate(
-              (spanElement_location) => spanElement_location.textContent.trim(),
-              spanElement_location
-            );
-
-            console.log(location);
-          } else {
-          }
-
-          const fourthButtonInnerText = await page.evaluate(() => {
-            const buttonElements = document.querySelectorAll(
-              ".artdeco-button--secondary .artdeco-button__text"
-            );
-            if (buttonElements.length >= 4) {
-              const fourthButtonElement = buttonElements[3];
-              if (fourthButtonElement.innerText.trim() === "Pending") {
-                console.log("Update the database!");
-              }
-              return fourthButtonElement.innerText.trim();
-            } else {
-              return null;
-            }
-          });
-          const contactInfoButton = await page.$(
-            "#top-card-text-details-contact-info"
-          );
-          if (contactInfoButton) {
-            await contactInfoButton.click();
-            console.log("Clicked on the contact info button");
-          } else {
-            console.log("Contact info button not found");
-          }
-
-          await page.waitForTimeout(3000);
-          const htmlContent = await page.content();
-          const emailRegex = /[\w]*[\w\.]*(?!\.)@gmail.com/g;
-          const matches = htmlContent.match(emailRegex);
-
-          // Extract the first match
-          email = matches ? matches[0] : null;
-
-          if (email) {
-            console.log(email);
-            await Users_Data.findOneAndUpdate(
-              { profile_url: link },
-              {
-                status: 1,
-              },
-              { new: true }
-            );
-          } else {
-            await Users_Data.findOneAndUpdate(
-              { profile_url: link },
-              {
-                status: 0,
-              },
-              { new: true }
-            );
-            console.log("Email not found");
-          }
-          const filter = { profile_url: link };
-          const update = {
-            profile_url: link,
-            profile_image_link: imageSrc,
-            location: location,
-            user_email: email,
-            is_visited: 1,
-            technology: uiUxDesignerText,
-            name: name,
-          };
-
-          // Use the upsert option to create a new record if it doesn't exist
-          const options = { upsert: true, new: true };
-
-          await Users_Data.findOneAndUpdate(filter, update, options);
+          console.log(imageSrc, "imagescr");
         }
+        try {
+          name = await page.$eval(".text-heading-xlarge", (element) => {
+            return element ? element.innerText.trim() : null;
+          });
+
+          if (name) {
+            console.log("Name:", name);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+
+        try {
+          uiUxDesignerText = await page.$eval(
+            ".text-body-medium.break-words",
+            (element) => {
+              return element ? element.innerText.trim() : null;
+            }
+          );
+
+          if (uiUxDesignerText) {
+            console.log("UI/UX Designer Text:", uiUxDesignerText);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+
+        // Find Location
+        const spanElement_location = await page.$("div.mt2 > .text-body-small");
+
+        // Check if the element exists
+        if (spanElement_location) {
+          location = await page.evaluate(
+            (spanElement_location) => spanElement_location.textContent.trim(),
+            spanElement_location
+          );
+
+          console.log(location);
+        } else {
+        }
+
+        const fourthButtonInnerText = await page.evaluate(() => {
+          const buttonElements = document.querySelectorAll(
+            ".artdeco-button--secondary .artdeco-button__text"
+          );
+          if (buttonElements.length >= 4) {
+            const fourthButtonElement = buttonElements[3];
+            if (fourthButtonElement.innerText.trim() === "Pending") {
+              console.log("Update the database!");
+            }
+            return fourthButtonElement.innerText.trim();
+          } else {
+            return null;
+          }
+        });
+        const contactInfoButton = await page.$(
+          "#top-card-text-details-contact-info"
+        );
+        if (contactInfoButton) {
+          await contactInfoButton.click();
+          console.log("Clicked on the contact info button");
+        } else {
+          console.log("Contact info button not found");
+        }
+
+        await page.waitForTimeout(3000);
+        const htmlContent = await page.content();
+        const emailRegex = /[\w]*[\w\.]*(?!\.)@gmail.com/g;
+        const matches = htmlContent.match(emailRegex);
+
+        // Extract the first match
+        email = matches ? matches[0] : null;
+
+        if (email) {
+          console.log(email);
+          await Users_Data.findOneAndUpdate(
+            { profile_url: link },
+            {
+              status: 1,
+            },
+            { new: true }
+          );
+        } else {
+          await Users_Data.findOneAndUpdate(
+            { profile_url: link },
+            {
+              status: 0,
+            },
+            { new: true }
+          );
+          console.log("Email not found");
+        }
+        const filter = { profile_url: link };
+        const update = {
+          profile_url: link,
+          profile_image_link: imageSrc,
+          location: location,
+          user_email: email,
+          is_visited: 1,
+          technology: uiUxDesignerText,
+          name: name,
+        };
+
+        // Use the upsert option to create a new record if it doesn't exist
+        const options = { upsert: true, new: true };
+
+        await Users_Data.findOneAndUpdate(filter, update, options);
+        // }
         res.status(200).json({ array_of_profile_urls });
       };
       console.log(links);
@@ -1416,10 +1438,8 @@ let browser;
           const Map_URL = req.body.map_url;
           const limitOfSearch = req.body.limitsearch;
           let Categroy_for_normal_map = req.body.map_category;
-          console.log(req.body);
-
           const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             defaultViewport: false,
           });
 
@@ -1451,7 +1471,7 @@ let browser;
               } else {
               }
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           };
 
@@ -1516,7 +1536,7 @@ let browser;
                   rating,
                   ratedBy,
                   address,
-                  openHours_MobileNumber: openHoursText,
+                  MobileNumber: openHoursText,
                   phoneNumber,
                   websiteLink,
                   directionsLink,
@@ -1538,19 +1558,19 @@ let browser;
                   },
                   { new: true, upsert: true }
                 );
-                console.log(data.companyName);
+                // console.log(data.companyName);
               } else {
-                console.log("Duplicate data. Skipping:");
+                // console.log("Duplicate data. Skipping:");
               }
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           }
 
           const PushLinkSForWebsiteFunction = async () => {
             try {
               const searchResults = await page.$$(".VkpGBb");
-              console.log(searchResults.length, "searchResults");
+              // console.log(searchResults.length, "searchResults");
 
               const limitOfSearch =
                 req.body.limitsearch || searchResults.length;
@@ -1562,25 +1582,25 @@ let browser;
               ) {
                 const result = searchResults[i];
                 await scrapeDataFromElement(result);
-                console.log(i);
+                // console.log(i);
               }
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           };
 
           const tdLength = await page.evaluate(() => {
             const table = document.querySelector("table.AaVjTc");
             if (!table) {
-              console.log("table Not Fount");
+              // console.log("table Not Fount");
               return 0;
             }
             const tdElements = table.querySelectorAll("td");
-            console.log(tdElements.length);
+            // console.log(tdElements.length);
             return tdElements.length;
           });
 
-          console.log("tdlength  ", tdLength);
+          // console.log("tdlength  ", tdLength);
           const NextButtonClick = await page.$(".d6cvqb > a");
           let countForwhile = 3;
 
@@ -1591,38 +1611,37 @@ let browser;
             await NextButtonClickFunction();
             await page.waitForTimeout(3000);
             countForwhile++;
-            console.log(countForwhile);
+            // console.log(countForwhile);
           } while (countForwhile < tdLength);
+          await page.close();
+          console.log("Process Done");
+          await browser.close();
+          return res.status(200).json({ message: "success" });
         } catch (error) {
-          console.log(error);
+          console.log("e");
         }
       });
     } catch (error) {
-      console.log(error);
+      console.log("e");
     }
 
     try {
       app.post("/companies_data_from_map_usa", async (req, res) => {
         try {
+          countError = 0;
           const Map_URL_USA = req.body.map_url;
           const limitOfSearch = req.body.limitsearch || 100;
           let categoryString = req.body.map_category;
-          console.log(req.body);
-
           const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             defaultViewport: false,
           });
-
           const page = await browser.newPage();
           await page.goto(Map_URL_USA, { waitUntil: "domcontentloaded" });
-
           let count_click_next_button = 0;
-
           const waitForTimeout = async (milliseconds) => {
             await page.waitForTimeout(milliseconds);
           };
-
           const NextButtonClickFunction = async () => {
             try {
               await page.evaluate(() => {
@@ -1639,31 +1658,26 @@ let browser;
                 try {
                   await nextButtons[nextButtonIndex].click();
 
-                  console.log(
-                    `Clicked the ${
-                      nextButtonIndex === 0 ? "first" : "second"
-                    } "Next" button`
-                  );
+                  // console.log(
+                  //   `Clicked the ${
+                  //     nextButtonIndex === 0 ? "first" : "second"
+                  //   } "Next" button`
+                  // );
                   count_click_next_button++;
                 } catch (error) {
-                  console.error(
-                    'Error clicking the "Next" button:',
-                    error.message
-                  );
+                  console.error('Error clicking the "Next" button:');
                 }
               }
               if (nextButtons && count_click_next_button > 0) {
                 try {
                   await nextButtons[1].click();
                 } catch (error) {
-                  console.error(
-                    'Error clicking the "Next" button:',
-                    error.message
-                  );
+                  countError++;
+                  console.error('Error clicking the "Next" button:');
                 }
               }
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           };
 
@@ -1683,9 +1697,9 @@ let browser;
                   address = secondAddressElement
                     ? secondAddressElement.innerText.trim()
                     : "";
-                  console.log("Second Address:", address);
+                  // console.log("Second Address:", address);
                 } else {
-                  console.log("Not enough elements matching the selector");
+                  // console.log("Not enough elements matching the selector");
                 }
 
                 let phoneNumber;
@@ -1703,9 +1717,9 @@ let browser;
                 );
                 if (linkElement) {
                   websiteLink = linkElement.getAttribute("href");
-                  console.log("Website Link:", websiteLink);
+                  // console.log("Website Link:", websiteLink);
                 } else {
-                  console.log("Website link element not found");
+                  // console.log("Website link element not found");
                 }
 
                 const directionsLinkElement = element.querySelector(
@@ -1754,14 +1768,14 @@ let browser;
               } else {
               }
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           }
 
           const PushLinkSForWebsiteFunction = async () => {
             try {
               const searchResults = await page.$$(`div[jsname="gam5T"]`);
-              console.log(searchResults.length, "searchResults");
+              // console.log(searchResults.length, "searchResults");
               const limitOfSearch =
                 req.body.limitsearch || searchResults.length;
               for (
@@ -1773,36 +1787,39 @@ let browser;
                 await scrapeDataFromElement(result);
               }
             } catch (error) {
-              console.log(error);
+              // console.log(error);
             }
           };
 
           for (
             let countForwhile = 0;
-            countForwhile < limitOfSearch;
+            countForwhile < limitOfSearch && countError < 3;
             countForwhile++
           ) {
             try {
               await waitForTimeout(3000);
               await PushLinkSForWebsiteFunction(limitOfSearch);
-              console.log("push links");
+              // console.log("push links");
 
               await waitForTimeout(3000);
               await NextButtonClickFunction();
-              console.log("next button");
+              // console.log("next button");
               await waitForTimeout(3000);
-
-              console.log(countForwhile);
+              // console.log(countForwhile);
             } catch (error) {
-              console.log(error);
+              console.log("e");
             }
           }
+          await page.close();
+          await browser.close();
+          console.log("Process Done");
+          return res.status(200).json({ message: "success" });
         } catch (error) {
-          console.log(error);
+          console.log("e");
         }
       });
     } catch (error) {
-      console.log(error);
+      console.log("e");
     }
 
     // Website Email Extractor

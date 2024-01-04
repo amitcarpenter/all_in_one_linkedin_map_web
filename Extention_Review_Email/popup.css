@@ -1,0 +1,30 @@
+body {
+    height: 448px;
+    width: 390px;
+    overflow-y: hidden;
+  }
+  
+  .popup-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  .content {
+    flex: 1;
+    overflow-y: auto; /* Add scrollbar for content */
+    padding: 10px;
+  }
+  
+  .footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  

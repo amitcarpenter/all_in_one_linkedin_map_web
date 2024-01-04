@@ -1,5 +1,6 @@
 const Map_Data = require("../Models/MapDataModels");
 const User = require("../Models/UserModels");
+const Category = require("../Models/CategoryModels");
 
 // // Sub Admin Table
 // const Load_Map_data_table = async (req, res) => {
@@ -123,7 +124,6 @@ const Load_Map_data_table = async (req, res) => {
 const delete_row_data = async (req, res) => {
   try {
     const id = req.params.id;
-    // Find the profile by ID and delete it from the database
     const deletedProfile = await Map_Data.findByIdAndDelete(id);
     if (!deletedProfile) {
       return res.status(404).json({ message: "Profile not found" });
@@ -135,261 +135,219 @@ const delete_row_data = async (req, res) => {
   }
 };
 
+const filter_Data_by_date = async (req, res) => {
+  try {
+    const startDate = new Date(req.query.startDate);
 
+    const endDate = new Date(req.query.endDate);
+    endDate.setHours(23, 59, 59, 999);
 
-// app.get("/filterDatabydate", async (req, res) => {
-//   try {
-//     const startDate = new Date(req.query.startDate);
+    const user_id = req.session.user_id;
+    const filterbydate = {
+      createdAt: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    };
+    const filteredData = await Map_Data.find(filterbydate);
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+  }
+};
 
-//     const endDate = new Date(req.query.endDate);
-//     endDate.setHours(23, 59, 59, 999);
+// Filter by day For |Website
+const filter_Data_by_day = async (req, res) => {
+  try {
+    const selectedDate = new Date(req.query.selectedDate);
+    console.log(selectedDate);
 
-//     const user_id = req.session.user_id;
-//     const filterbydate = {
-//       createdAt: {
-//         $gte: startDate,
-//         $lt: endDate,
-//       },
-//     };
+    const startDate = new Date(selectedDate);
+    startDate.setHours(0, 0, 0, 0);
 
-//     // Add user_id to the filter
-//     // if (user_id) {
-//     //   filterbydate.user_id = user_id;
-//     // }
-//     // Fetch the data from the database based on the date range
-//     const filteredData = await DomainEmail.find(filterbydate);
-//     res.json(filteredData);
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     res.status(500).json({ error: "An unexpected error occurred." });
-//   }
-// });
+    const endDate = new Date(selectedDate);
+    endDate.setHours(23, 59, 59, 999);
 
-// // Filter by day For |Website
-// app.get("/filterDatabyday", async (req, res) => {
-//   try {
-//     const selectedDate = new Date(req.query.selectedDate);
-//     console.log(selectedDate);
+    const filterbyday = {
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    };
+    x;
+    const filteredData = await Map_Data.find(filterbyday);
+    console.log(filteredData);
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+  }
+};
 
-//     // Set the startDate to the beginning of the selected day (00:00:00)
-//     const startDate = new Date(selectedDate);
-//     startDate.setHours(0, 0, 0, 0);
+// POST Route For Both
+const add_category = (req, res) => {
+  const { category } = req.body;
+  console.log(category);
+  if (!category) {
+    return res
+      .status(400)
+      .json({ error: "Name and description are required." });
+  }
+  const newCategory = new Category({
+    category,
+  });
+  newCategory
+    .save()
+    .then((savedCategory) => res.status(201).json(savedCategory))
+    .catch((err) => {
+      res.status(500).json({ error: "Failed to create category." });
+      console.log(err);
+    });
+};
 
-//     // Set the endDate to the end of the selected day (23:59:59)
-//     const endDate = new Date(selectedDate);
-//     endDate.setHours(23, 59, 59, 999);
+// Get the Category  for Both
+const get_category = async (req, res) => {
+  await Category.find()
+    .then((categories) => {
+      res.json(categories);
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "Failed to fetch categories." })
+    );
+};
 
-//     const filterbyday = {
-//       createdAt: {
-//         $gte: startDate,
-//         $lte: endDate,
-//       },
-//     };
+// Delete Category
+const delete_category = async (req, res) => {
+  let categoryValues = req.query.selectedCategory; // Assuming 'selectedCategory' is either an array or a comma-separated string
+  console.log(categoryValues);
 
-//     // Fetch the data from the database for the specified day
-//     const filteredData = await DomainEmail.find(filterbyday);
+  try {
+    let selectedCategoryArray;
 
-//     res.json(filteredData);
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     res.status(500).json({ error: "An unexpected error occurred." });
-//   }
-// });
+    if (Array.isArray(categoryValues)) {
+      selectedCategoryArray = categoryValues;
+    } else if (typeof categoryValues === "string") {
+      // Split the comma-separated string into an array
+      selectedCategoryArray = categoryValues.split(",");
+    } else {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid input. selectedCategory should be an array or a comma-separated string.",
+      });
+    }
 
-// // POST Route For Both
-// app.post("/api/categories", (req, res) => {
-//   const { category } = req.body;
-//   console.log(category);
-//   // Validate the request body
-//   if (!category) {
-//     return res
-//       .status(400)
-//       .json({ error: "Name and description are required." });
-//   }
+    console.log(selectedCategoryArray);
 
-//   // Create a new category using the Category model
-//   const newCategory = new Category({
-//     category,
-//   });
+    // Delete categories based on their values
+    const result = await Category.deleteMany({
+      category: { $in: selectedCategoryArray },
+    });
 
-//   // Save the new category to the database
-//   newCategory
-//     .save()
-//     .then((savedCategory) => res.status(201).json(savedCategory))
-//     .catch((err) => {
-//       res.status(500).json({ error: "Failed to create category." });
-//       console.log(err);
-//     });
-// });
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Categories not found." });
+    }
 
-// // Get the Category  for Both
-// app.get("/api/categories", async (req, res) => {
-//   // Use the Category model to find all categories in the database
-//   await Category.find()
-//     .then((categories) => {
-//       res.json(categories);
-//     })
-//     .catch((err) =>
-//       res.status(500).json({ error: "Failed to fetch categories." })
-//     );
-// });
+    return res.json({
+      success: true,
+      message: "Categories deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error while deleting categories:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting the categories.",
+    });
+  }
+};
 
-// // Delete Category
-// app.delete("/api/categories", async (req, res) => {
-//   let categoryValues = req.query.selectedCategory; // Assuming 'selectedCategory' is either an array or a comma-separated string
-//   console.log(categoryValues);
+// Filter the data date and category in website Emails
+const filter_date_and_category = async (req, res) => {
+  try {
+    const selectedCategories = req.query.selectedCategory;
+    console.log(selectedCategories);
 
-//   try {
-//     let selectedCategoryArray;
+    let selectedCategoryArray;
 
-//     if (Array.isArray(categoryValues)) {
-//       selectedCategoryArray = categoryValues;
-//     } else if (typeof categoryValues === "string") {
-//       // Split the comma-separated string into an array
-//       selectedCategoryArray = categoryValues.split(",");
-//     } else {
-//       return res.status(400).json({
-//         success: false,
-//         message:
-//           "Invalid input. selectedCategory should be an array or a comma-separated string.",
-//       });
-//     }
+    selectedCategoryArray = Array.isArray(selectedCategories)
+      ? selectedCategories
+      : [selectedCategories];
 
-//     console.log(selectedCategoryArray);
+    if (typeof selectedCategories === "string") {
+      selectedCategoryArray = selectedCategories.split(",");
+    }
+    const startDate = new Date(req.query.startDate);
+    const endDate = new Date(req.query.endDate);
+    endDate.setHours(23, 59, 59, 999);
+    const user_id = req.session.user_id;
+    const filterbycategory = {
+      category: { $in: selectedCategoryArray },
+      createdAt: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    };
+    const filteredData = await Map_Data.find(filterbycategory);
 
-//     // Delete categories based on their values
-//     const result = await Category.deleteMany({
-//       category: { $in: selectedCategoryArray },
-//     });
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+  }
+};
 
-//     if (result.deletedCount === 0) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Categories not found." });
-//     }
+// Filter By Data by Category  For Website
+const filter_Databy_Category = async (req, res) => {
+  const selectedCategories = req.query.selectedCategory;
+  console.log(selectedCategories);
+  try {
+    let selectedCategoryArray;
 
-//     return res.json({
-//       success: true,
-//       message: "Categories deleted successfully.",
-//     });
-//   } catch (error) {
-//     console.error("Error while deleting categories:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "An error occurred while deleting the categories.",
-//     });
-//   }
-// });
+    selectedCategoryArray = Array.isArray(selectedCategories)
+      ? selectedCategories
+      : [selectedCategories];
 
-// // Filter the data date and category in website Emails
-// app.get("/filterdateandcategory", async (req, res) => {
-//   try {
-//     const selectedCategories = req.query.selectedCategory;
-//     console.log(selectedCategories);
-
-//     let selectedCategoryArray;
-
-//     selectedCategoryArray = Array.isArray(selectedCategories)
-//       ? selectedCategories
-//       : [selectedCategories];
-
-//     if (typeof selectedCategories === "string") {
-//       // Split the comma-separated string into an array
-//       selectedCategoryArray = selectedCategories.split(",");
-//     }
-//     const startDate = new Date(req.query.startDate);
-//     const endDate = new Date(req.query.endDate);
-
-//     // Set the endDate to the end of the selected day (23:59:59)
-//     endDate.setHours(23, 59, 59, 999);
-
-//     // Create the query object with 'category' and 'createdAt' fields
-
-//     const user_id = req.session.user_id;
-//     const filterbycategory = {
-//       category: { $in: selectedCategoryArray },
-//       createdAt: {
-//         $gte: startDate,
-//         $lt: endDate,
-//       },
-//     };
-
-//     // Add user_id to the filter
-//     // if (user_id) {
-//     //   filterbycategory.user_id = user_id;
-//     // }
-
-//     // Fetch the data from the database based on the category and date range
-//     const filteredData = await DomainEmail.find(filterbycategory);
-
-//     res.json(filteredData);
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     res.status(500).json({ error: "An unexpected error occurred." });
-//   }
-// });
-
-// // Filter By Data by Category  For Website
-// app.get("/api/filterDatabyCategory", async (req, res) => {
-//   const selectedCategories = req.query.selectedCategory;
-//   console.log(selectedCategories);
-//   try {
-//     let selectedCategoryArray;
-
-//     selectedCategoryArray = Array.isArray(selectedCategories)
-//       ? selectedCategories
-//       : [selectedCategories];
-
-//     if (typeof selectedCategories === "string") {
-//       // Split the comma-separated string into an array
-//       selectedCategoryArray = selectedCategories.split(",");
-//     }
-//     // selectedCategoryArray = selectedCategoryArray.split(',');
-//     // console.log(selectedCategoryArray)
-
-//     // Create the query object with the 'category' field
-//     const user_id = req.session.user_id;
-//     const filterbycategory = {
-//       category: { $in: selectedCategoryArray },
-//     };
-//     const filteredData = await DomainEmail.find(filterbycategory);
-//     res.json(filteredData);
-//   } catch (error) {
-//     console.error("Error occurred:", error);
-//     res
-//       .status(500)
-//       .json({ error: "An unexpected error occurred. Please try again later." });
-//   }
-// });
-
-
+    if (typeof selectedCategories === "string") {
+      selectedCategoryArray = selectedCategories.split(",");
+    }
+    const user_id = req.session.user_id;
+    const filterbycategory = {
+      category: { $in: selectedCategoryArray },
+    };
+    const filteredData = await Map_Data.find(filterbycategory);
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An unexpected error occurred. Please try again later." });
+  }
+};
 
 // Save Doamin emails in data base
 const save_data_in_database = async (req, res) => {
   const { Email, DomainName, category, secretCode, Number } = req.body;
-
   console.log(secretCode);
   if (secretCode == undefined) {
     const user_id = req.session.user_id || "Guest";
     console.log(req.session);
-    const existingLead = await DomainEmail.findOne({ Email: Email });
-    // console.log(existingLead);
+    const existingLead = await Map_Data.findOne({ Email: Email });
     const UserData = await User.findOne({ _id: user_id });
 
     console.log(UserData);
     console.log(UserData.id);
-    // const user_id = UserData._id;
-    // console.log(UserData);
     const secretCode = UserData.secretCode;
 
     if (existingLead) {
-      // If the email exists, render the error EJS template
       return res
         .status(400)
         .json({ success: false, message: "Duplicate email" });
     }
 
-    const newEmail = new DomainEmail({
+    const newEmail = new Map_Data({
       user_id: user_id,
       DomainName: DomainName,
       Email: Email,
@@ -402,24 +360,19 @@ const save_data_in_database = async (req, res) => {
     console.log("Emails saved successfully to the database!");
     return res.json({ message: "Emails saved successfully to the database" });
   } else {
-    const existingLead = await DomainEmail.findOne({ Email: Email });
-    // console.log(existingLead);
+    const existingLead = await Map_Data.findOne({ Email: Email });
     const UserData = await User.findOne({ secretCode: secretCode });
 
     console.log(UserData);
     console.log(UserData.id);
     const user_id = UserData._id;
-    // console.log(UserData);
-    // const secretCodex = UserData.secretCode;
-
     if (existingLead) {
-      // If the email exists, render the error EJS template
       return res
         .status(400)
         .json({ success: false, message: "Duplicate email" });
     }
 
-    const newEmail = new DomainEmail({
+    const newEmail = new Map_Data({
       user_id: user_id,
       DomainName: DomainName,
       Email: Email,
@@ -428,10 +381,20 @@ const save_data_in_database = async (req, res) => {
       secretCode: secretCode,
     });
     await newEmail.save();
-
     console.log("Emails saved successfully to the database!");
     return res.json({ message: "Emails saved successfully to the database" });
   }
 };
 
-module.exports = { Load_Map_data_table, delete_row_data , save_data_in_database };
+module.exports = {
+  Load_Map_data_table,
+  delete_row_data,
+  save_data_in_database,
+  filter_Data_by_date,
+  filter_Data_by_day,
+  add_category,
+  get_category,
+  delete_category,
+  filter_date_and_category,
+  filter_Databy_Category,
+};
